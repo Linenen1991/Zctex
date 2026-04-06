@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySampleProject", "MySampleProject\MySampleProject.csproj", "{D3DA63D2-F215-4CD4-8AF9-C5E6357F308D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncElastic", "AsyncElastic\AsyncElastic.csproj", "{D3DA63D2-F215-4CD4-8AF9-C5E6357F308D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MySampleProject.Tests", "MySampleProject.Tests\MySampleProject.Tests.csproj", "{80F4A359-5F33-4A81-B67A-62238908B1A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AsyncElastic.Tests", "AsyncElastic.Tests\AsyncElastic.Tests.csproj", "{80F4A359-5F33-4A81-B67A-62238908B1A1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

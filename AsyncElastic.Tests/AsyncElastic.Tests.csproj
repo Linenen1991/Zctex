@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MySampleProject\MySampleProject.csproj" />
+    <ProjectReference Include="..\AsyncElastic\AsyncElastic.csproj" />
   </ItemGroup>
 
 </Project>
