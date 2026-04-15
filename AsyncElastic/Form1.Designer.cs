@@ -28,77 +28,57 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.filterGrid = new System.Windows.Forms.DataGridView();
-            this.dataGrid = new System.Windows.Forms.DataGridView();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.filterGrid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
-            this.SuspendLayout();
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.filterGrid);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.dataGrid);
-            this.splitContainer1.Size = new System.Drawing.Size(1000, 575);
-            this.splitContainer1.SplitterDistance = 220;
-            this.splitContainer1.TabIndex = 0;
+            filterGrid = new DataGridView();
+            listView1 = new ListView();
+            button1 = new Button();
+            ((System.ComponentModel.ISupportInitialize)filterGrid).BeginInit();
+            SuspendLayout();
             // 
             // filterGrid
             // 
-            this.filterGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.filterGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.filterGrid.Location = new System.Drawing.Point(0, 0);
-            this.filterGrid.Name = "filterGrid";
-            this.filterGrid.RowTemplate.Height = 25;
-            this.filterGrid.Size = new System.Drawing.Size(1000, 220);
-            this.filterGrid.TabIndex = 0;
+            filterGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            filterGrid.Location = new Point(12, 12);
+            filterGrid.Name = "filterGrid";
+            filterGrid.RowHeadersWidth = 51;
+            filterGrid.RowTemplate.Height = 25;
+            filterGrid.Size = new Size(1177, 342);
+            filterGrid.TabIndex = 0;
             // 
-            // dataGrid
+            // listView1
             // 
-            this.dataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGrid.Location = new System.Drawing.Point(0, 0);
-            this.dataGrid.Name = "dataGrid";
-            this.dataGrid.RowTemplate.Height = 25;
-            this.dataGrid.Size = new System.Drawing.Size(1000, 351);
-            this.dataGrid.TabIndex = 0;
+            listView1.Location = new Point(12, 360);
+            listView1.Name = "listView1";
+            listView1.Size = new Size(1177, 140);
+            listView1.TabIndex = 1;
+            listView1.UseCompatibleStateImageBehavior = false;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(12, 506);
+            button1.Name = "button1";
+            button1.Size = new Size(94, 29);
+            button1.TabIndex = 2;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            button1.Click += button1_Click;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1000, 600);
-            this.Controls.Add(this.splitContainer1);
-            this.Name = "Form1";
-            this.Text = "AsyncElastic";
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.filterGrid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();
-            this.ResumeLayout(false);
+            ClientSize = new Size(1201, 554);
+            Controls.Add(button1);
+            Controls.Add(listView1);
+            Controls.Add(filterGrid);
+            Name = "Form1";
+            ((System.ComponentModel.ISupportInitialize)filterGrid).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion
 
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.DataGridView filterGrid;
-        private System.Windows.Forms.DataGridView dataGrid;
+
+        private DataGridView filterGrid;
+        private DataGridView dataGridView1;
+        private ListView listView1;
+        private Button button1;
     }
 }

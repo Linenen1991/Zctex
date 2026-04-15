@@ -83,7 +83,6 @@ public sealed class FilterGridController : IDisposable
         grid.MultiSelect = true;
         grid.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
         grid.RowHeadersVisible = false;
-        grid.Dock = DockStyle.Fill;
 
         grid.Columns.Clear();
 

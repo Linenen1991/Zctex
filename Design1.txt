@@ -1,3 +1,4 @@
+===Part1:===
 Design Listview or datagridview:
   Repersent the a list of filter.
   Col 1, ServiceName
@@ -23,3 +24,8 @@ e.g.
 match
 1234
 12345
+
+
+===Part2:===
+Any chance made a auto-complete when editing the col1~col4
+
