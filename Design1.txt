@@ -1,3 +1,9 @@
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+
 ===Part1:===
 Design Listview or datagridview:
   Repersent the a list of filter.
@@ -28,4 +34,4 @@ match
 
 ===Part2:===
 Any chance made a auto-complete when editing the col1~col4
-
+and show the candi
