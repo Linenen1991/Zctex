@@ -1,0 +1,187 @@
+<UserControl x:Class="WpfApp1.Controls.AsyncElasticPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="554" d:DesignWidth="1201">
+    <Grid Margin="12">
+        <TabControl SelectionChanged="MainTabs_SelectionChanged">
+            <TabItem Header="Filter">
+                <Grid Margin="6">
+                    <DataGrid x:Name="FilterGrid"
+                              ItemsSource="{Binding FilterRules, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="True"
+                              CanUserDeleteRows="False"
+                              SelectionMode="Extended"
+                              SelectionUnit="FullRow"
+                              HeadersVisibility="Column"
+                              RowHeaderWidth="0"
+                              KeyDown="FilterGrid_KeyDown">
+                        <DataGrid.CellStyle>
+                            <Style TargetType="{x:Type DataGridCell}">
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#33007ACC" />
+                                        <Setter Property="Foreground" Value="Black" />
+                                    </Trigger>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                        <Setter Property="BorderBrush" Value="OrangeRed" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove selected" Click="RemoveSelected_Click" />
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="" Width="44" CanUserSort="False">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="Del"
+                                                Padding="6,0"
+                                                Click="RemoveRule_Click"
+                                                Tag="{Binding}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTextColumn Header="ServiceName"
+                                                Binding="{Binding ServiceNamePattern, UpdateSourceTrigger=PropertyChanged}"
+                                                Width="*" CanUserSort="False" />
+                            <DataGridTextColumn Header="ClassName"
+                                                Binding="{Binding ClassNamePattern, UpdateSourceTrigger=PropertyChanged}"
+                                                Width="*" CanUserSort="False" />
+                            <DataGridTextColumn Header="MethodName"
+                                                Binding="{Binding MethodNamePattern, UpdateSourceTrigger=PropertyChanged}"
+                                                Width="*" CanUserSort="False" />
+                            <DataGridTextColumn Header="Message"
+                                                Binding="{Binding MessagePattern, UpdateSourceTrigger=PropertyChanged}"
+                                                Width="*" CanUserSort="False" />
+
+                            <DataGridTemplateColumn Header="Color" Width="84" CanUserSort="False" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding MatchColorHex}"
+                                                Background="{Binding MatchBrush}"
+                                                Foreground="{Binding MatchForeground}"
+                                                Padding="6,0"
+                                                Click="PickColor_Click"
+                                                Tag="{Binding}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="LogList">
+                <Grid Margin="6">
+                    <ListView x:Name="LogList"
+                              ItemsSource="{Binding LogEntries, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                              BorderThickness="1">
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Add filter rule">
+                                    <MenuItem Header="All columns"
+                                              Tag="All"
+                                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              Click="LogList_AddRule_Click" />
+                                    <Separator />
+                                    <MenuItem Header="ServiceName"
+                                              Tag="ServiceName"
+                                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              Click="LogList_AddRule_Click" />
+                                    <MenuItem Header="ClassName"
+                                              Tag="ClassName"
+                                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              Click="LogList_AddRule_Click" />
+                                    <MenuItem Header="MethodName"
+                                              Tag="MethodName"
+                                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              Click="LogList_AddRule_Click" />
+                                    <MenuItem Header="Message"
+                                              Tag="Message"
+                                              CommandParameter="{Binding PlacementTarget.SelectedItem, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                              Click="LogList_AddRule_Click" />
+                                </MenuItem>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <EventSetter Event="PreviewMouseRightButtonDown"
+                                             Handler="LogListItem_PreviewMouseRightButtonDown" />
+                                <Setter Property="Background" Value="{Binding Background}" />
+                                <Setter Property="Foreground" Value="{Binding Foreground}" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="Padding" Value="2,1" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="BorderBrush" Value="#FF3399FF" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                    </Trigger>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                        <Setter Property="BorderBrush" Value="OrangeRed" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ServiceName" DisplayMemberBinding="{Binding ServiceName}" Width="160" />
+                                <GridViewColumn Header="ClassName" DisplayMemberBinding="{Binding ClassName}" Width="240" />
+                                <GridViewColumn Header="MethodName" DisplayMemberBinding="{Binding MethodName}" Width="200" />
+                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="520" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="EventList">
+                <Grid Margin="6">
+                    <ListView x:Name="EventList"
+                              ItemsSource="{Binding EventEntries, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
+                              BorderThickness="1">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListViewItem}">
+                                <Setter Property="Background" Value="{Binding Background}" />
+                                <Setter Property="Foreground" Value="{Binding Foreground}" />
+                                <Setter Property="BorderBrush" Value="Transparent" />
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="Padding" Value="2,1" />
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="BorderBrush" Value="#FF3399FF" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                    </Trigger>
+                                    <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                        <Setter Property="BorderBrush" Value="OrangeRed" />
+                                        <Setter Property="BorderThickness" Value="2" />
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ServiceName" DisplayMemberBinding="{Binding ServiceName}" Width="160" />
+                                <GridViewColumn Header="ClassName" DisplayMemberBinding="{Binding ClassName}" Width="240" />
+                                <GridViewColumn Header="MethodName" DisplayMemberBinding="{Binding MethodName}" Width="200" />
+                                <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="520" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>
