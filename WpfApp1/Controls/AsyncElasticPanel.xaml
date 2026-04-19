@@ -10,7 +10,19 @@
         <TabControl SelectionChanged="MainTabs_SelectionChanged">
             <TabItem Header="Filter">
                 <Grid Margin="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,6">
+                        <Button Content="Save filters"
+                                Width="120"
+                                Click="SaveFilters_Click" />
+                    </StackPanel>
+
                     <DataGrid x:Name="FilterGrid"
+                              Grid.Row="1"
                               ItemsSource="{Binding FilterRules, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
                               AutoGenerateColumns="False"
                               CanUserAddRows="True"

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +17,7 @@ namespace WpfApp1.Controls;
 public partial class AsyncElasticPanel : UserControl
 {
     public ElasticQueryViewModel Query { get; } = new();
+    private bool _filtersAutoLoaded;
 
     public static readonly DependencyProperty FilterRulesProperty = DependencyProperty.Register(
         nameof(FilterRules),
@@ -59,6 +62,24 @@ public partial class AsyncElasticPanel : UserControl
         FilterRules ??= new ObservableCollection<FilterRule>();
         LogEntries ??= new ObservableRangeCollection<LogEntry>();
         EventEntries ??= new ObservableRangeCollection<LogEntry>();
+
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        if (_filtersAutoLoaded)
+        {
+            return;
+        }
+
+        if (DesignerProperties.GetIsInDesignMode(this))
+        {
+            return;
+        }
+
+        _filtersAutoLoaded = true;
+        TryLoadFiltersFromDisk();
     }
 
     private void MainTabs_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -88,6 +109,21 @@ public partial class AsyncElasticPanel : UserControl
 
     private void RemoveSelected_Click(object sender, RoutedEventArgs e) => RemoveSelectedRules();
 
+    private void SaveFilters_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            CommitGridEdits();
+            var rules = FilterRules ?? Array.Empty<FilterRule>();
+            var path = FilterRuleDiskStore.GetDefaultPath();
+            FilterRuleDiskStore.Save(path, rules);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Save filters failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
     private async void QueryButton_Click(object sender, RoutedEventArgs e)
     {
         var target = LogEntries;
@@ -106,6 +142,45 @@ public partial class AsyncElasticPanel : UserControl
     private void PrevPage_Click(object sender, RoutedEventArgs e) => Query.PrevPage();
 
     private void NextPage_Click(object sender, RoutedEventArgs e) => Query.NextPage();
+
+    private void TryLoadFiltersFromDisk()
+    {
+        try
+        {
+            var rules = FilterRules;
+            if (rules is null)
+            {
+                return;
+            }
+
+            var path = FilterRuleDiskStore.GetDefaultPath();
+            if (!File.Exists(path))
+            {
+                return;
+            }
+
+            var loaded = FilterRuleDiskStore.Load(path);
+            if (rules.IsReadOnly)
+            {
+                return;
+            }
+
+            // IList<T> doesn't guarantee Clear(), so remove by index.
+            for (var i = rules.Count - 1; i >= 0; i--)
+            {
+                rules.RemoveAt(i);
+            }
+
+            foreach (var rule in loaded)
+            {
+                rules.Add(rule);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Load filters failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
 
     private void LogList_AddRule_Click(object sender, RoutedEventArgs e)
     {
