@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
+             x:Name="Root"
              d:DesignHeight="554" d:DesignWidth="1201">
     <Grid Margin="12">
         <TabControl SelectionChanged="MainTabs_SelectionChanged">
@@ -84,9 +85,60 @@
 
             <TabItem Header="LogList">
                 <Grid Margin="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0"
+                            Margin="0,0,0,6"
+                            Padding="6"
+                            BorderThickness="1"
+                            BorderBrush="#22000000"
+                            Background="#06FFFFFF"
+                            DataContext="{Binding Query, ElementName=Root}">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Width="90"
+                                        Margin="0,0,8,0"
+                                        Content="{Binding ActionButtonText}"
+                                        Click="QueryButton_Click" />
+
+                                <TextBlock VerticalAlignment="Center" Text="End UTC:" Margin="0,0,6,0" />
+                                <TextBox Width="220"
+                                         Margin="0,0,12,0"
+                                         Text="{Binding EndUtc, UpdateSourceTrigger=PropertyChanged}" />
+
+                                <Button Width="60"
+                                        Margin="0,0,6,0"
+                                        Content="Prev"
+                                        IsEnabled="{Binding CanPrev}"
+                                        Click="PrevPage_Click" />
+                                <Button Width="60"
+                                        Margin="0,0,12,0"
+                                        Content="Next"
+                                        IsEnabled="{Binding CanNext}"
+                                        Click="NextPage_Click" />
+
+                                <TextBlock VerticalAlignment="Center"
+                                           Text="{Binding PageText}" />
+                            </StackPanel>
+
+                            <TextBlock DockPanel.Dock="Right"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding StatusText}"
+                                       TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
+                    </Border>
+
                     <ListView x:Name="LogList"
+                              Grid.Row="1"
                               ItemsSource="{Binding LogEntries, RelativeSource={RelativeSource AncestorType={x:Type UserControl}}}"
-                              BorderThickness="1">
+                              BorderThickness="1"
+                              VirtualizingStackPanel.IsVirtualizing="True"
+                              VirtualizingStackPanel.VirtualizationMode="Recycling"
+                              ScrollViewer.CanContentScroll="True"
+                              ScrollViewer.IsDeferredScrollingEnabled="True">
                         <ListView.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Add filter rule">

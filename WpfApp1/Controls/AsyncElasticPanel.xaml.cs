@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,8 @@ namespace WpfApp1.Controls;
 
 public partial class AsyncElasticPanel : UserControl
 {
+    public ElasticQueryViewModel Query { get; } = new();
+
     public static readonly DependencyProperty FilterRulesProperty = DependencyProperty.Register(
         nameof(FilterRules),
         typeof(IList<FilterRule>),
@@ -52,6 +55,10 @@ public partial class AsyncElasticPanel : UserControl
     public AsyncElasticPanel()
     {
         InitializeComponent();
+
+        FilterRules ??= new ObservableCollection<FilterRule>();
+        LogEntries ??= new ObservableRangeCollection<LogEntry>();
+        EventEntries ??= new ObservableRangeCollection<LogEntry>();
     }
 
     private void MainTabs_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -80,6 +87,25 @@ public partial class AsyncElasticPanel : UserControl
     }
 
     private void RemoveSelected_Click(object sender, RoutedEventArgs e) => RemoveSelectedRules();
+
+    private async void QueryButton_Click(object sender, RoutedEventArgs e)
+    {
+        var target = LogEntries;
+        if (target is null)
+        {
+            return;
+        }
+
+        Query.BindTargets(
+            targetEntries: target,
+            getFilterRules: () => (FilterRules ?? Array.Empty<FilterRule>()).ToArray());
+
+        await Query.StartOrCancelAsync();
+    }
+
+    private void PrevPage_Click(object sender, RoutedEventArgs e) => Query.PrevPage();
+
+    private void NextPage_Click(object sender, RoutedEventArgs e) => Query.NextPage();
 
     private void LogList_AddRule_Click(object sender, RoutedEventArgs e)
     {

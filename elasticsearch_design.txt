@@ -1,0 +1,101 @@
+Elasticsearch Query Design (WPF AsyncElasticPanel)
+Date: 2026-04-17
+
+Goal
+- Add a Query/Cancel button to fetch log documents from Elasticsearch and display them in LogList.
+- Handle very large datasets (100M+ docs) safely: async, cancellable, paging, and throttled UI updates.
+- Keep query state/logic in a dedicated model/viewmodel file (not in the UserControl code-behind).
+- Expose a status string showing fetched count + running/finished/error.
+
+Key UX Requirements
+- Button is always usable:
+  - When idle: shows "Query"
+  - When running: shows "Cancel" and cancels the current query
+- Results go to LogList.
+- Paging:
+  - Fetch only first N pages (bounded).
+  - Page size default 10,000.
+  - MaxPages default 7.
+  - Support Prev/Next via in-memory cached pages.
+- Status:
+  - String property (bindable) reports:
+    - Running/Finished/Cancelled/Error
+    - Current fetched count
+    - Current page / loaded pages
+
+Query Semantics
+- Time-ordered results (newest first):
+  - Filter on @timestamp by absolute UTC times (no "now"):
+    - endUtc provided by caller (UTC string)
+    - gte = endUtc - 24 hours
+    - lte = endUtc
+  - Sort for time order + stable paging:
+    - sort: @timestamp desc, then _shard_doc desc (tie-breaker)
+  - Use PIT + search_after for deep paging.
+
+Client / Dependencies
+- Use official Elasticsearch .NET client (ES 8.x):
+  - Package: Elastic.Clients.Elasticsearch
+- Default connection:
+  - EndpointUrl: http://localhost:9200
+  - IndexPattern: logs-*
+  - No auth (dev). (Auth can be added later.)
+
+Architecture
+1) ViewModel file
+- File: WpfApp1/Models/ElasticQueryViewModel.cs
+- Responsibilities:
+  - Holds query settings and state
+  - Owns CancellationTokenSource
+  - Runs async query loop
+  - Caches pages (in memory)
+  - Exposes methods for UI:
+    - StartOrCancel (toggle)
+    - PrevPage / NextPage / SelectPage
+- Public bindable properties (INotifyPropertyChanged):
+  - string EndpointUrl
+  - string IndexPattern
+  - string EndUtc
+  - int PageSize (default 10000)
+  - int MaxPages (default 7)
+  - bool IsRunning
+  - long FetchedCount
+  - int SelectedPageIndex
+  - int LoadedPagesCount
+  - string StatusText
+  - string? LastError
+
+2) Conversion hook (user-implemented later)
+- Provide a conversion hook so user can parse JSON later:
+  - Func<JsonElement, LogEntry> ConvertSourceToLogEntry
+  - Default: store full JSON into LogEntry.Message, leave other fields empty.
+
+UI Update Strategy
+- Do not update GUI per document for huge loads.
+- Update StatusText once per page.
+- When switching pages: replace visible LogEntries in bulk (single collection reset).
+- Keep ListView virtualization enabled.
+
+Query Loop (pseudo)
+- Validate/parse EndUtc as DateTimeOffset (UTC)
+- start = endUtc - 24h
+- Open PIT on IndexPattern (keep_alive 5m)
+- searchAfter = null
+- for page=1..MaxPages:
+  - if cancelled -> break
+  - SearchAsync with PIT + size + range filter + sort + search_after
+  - if hits empty -> break
+  - Convert hits -> List<LogEntry> pageItems
+  - Cache pageItems
+  - If page==1: show it
+  - Update FetchedCount += pageItems.Count
+  - Update StatusText
+  - searchAfter = lastHit.sort
+- Close PIT in finally
+- Set StatusText to Finished/Cancelled/Error
+
+Acceptance
+- Query starts, status updates per page, UI responsive.
+- Cancel stops quickly and returns to idle state.
+- Prev/Next page works from cache.
+- Errors show in StatusText, no crashes.
