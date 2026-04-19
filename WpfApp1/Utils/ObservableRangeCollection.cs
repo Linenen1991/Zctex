@@ -2,39 +2,39 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
-namespace WpfApp1.Utils;
-
-public sealed class ObservableRangeCollection<T> : ObservableCollection<T>
+namespace WpfApp1.Utils
 {
-    private bool _suppressNotification;
-
-    protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+    public sealed class ObservableRangeCollection<T> : ObservableCollection<T>
     {
-        if (_suppressNotification)
-        {
-            return;
-        }
+        private bool _suppressNotification;
 
-        base.OnCollectionChanged(e);
-    }
-
-    public void ReplaceRange(IEnumerable<T> items)
-    {
-        _suppressNotification = true;
-        try
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            Clear();
-            foreach (var item in items)
+            if (_suppressNotification)
             {
-                Add(item);
+                return;
             }
-        }
-        finally
-        {
-            _suppressNotification = false;
+
+            base.OnCollectionChanged(e);
         }
 
-        OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        public void ReplaceRange(IEnumerable<T> items)
+        {
+            _suppressNotification = true;
+            try
+            {
+                Clear();
+                foreach (var item in items)
+                {
+                    Add(item);
+                }
+            }
+            finally
+            {
+                _suppressNotification = false;
+            }
+
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
     }
 }
-
