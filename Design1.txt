@@ -1,36 +1,4 @@
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-
-
-===Part1:===
-Design Listview or datagridview:
-  Repersent the a list of filter.
-  Col 1, ServiceName
-  Col 2, ClassName
-  Col 3, MethodName
-  Col 4, Message
-  Col 5, Color
-Except the col5, other col is string type.
-
-Design Listview or datagridview:
-  Repersent the a list of data
-each data contain
-  string ServiceName,
-  string ClassName,
-  string MethodName,
-  string Message,
-
-and each data will go thourght the filter list.
-if the data match the filter, the row of the data will be render the color of the filter config
-the and filter could have wildcard* feature, that mean match anything
-e.g.
-123*
-match
-1234
-12345
-
-
-===Part2:===
-Any chance made a auto-complete when editing the col1~col4
-and show the candi
+C# WPF .net framework 4.7.2
+Create a usercontrol "MaskingRulesConfig" and embedded the usercontrol into MainWindow.xaml
+Layout:
+Listview Name:MaskingRuleListview binding:MaskingRule
