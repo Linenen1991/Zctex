@@ -37,11 +37,9 @@
                         <DataTemplate>
                             <DockPanel LastChildFill="False">
                                 <TextBox Width="160"
-                                         Margin="0,0,8,0"
                                          VerticalContentAlignment="Center"
                                          Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock Margin="0,0,8,0"
-                                           VerticalAlignment="Center"
+                                <TextBlock VerticalAlignment="Center"
                                            FontWeight="SemiBold"
                                            Text="{Binding FixedCandidate}" />
                                 <TextBox Width="160"

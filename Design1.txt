@@ -1,4 +1,14 @@
-C# WPF .net framework 4.7.2
-Create a usercontrol "MaskingRulesConfig" and embedded the usercontrol into MainWindow.xaml
-Layout:
-Listview Name:MaskingRuleListview binding:MaskingRule
+Design changes:
+Added Col4 "LogInformation" to LogListView.
+
+And Start Match button have new requirement:
+After click.
+the 3rd column of SearchRuleTable contain Prefix+FixedString+Suffix
+And it will take the rule to match the LogInformation
+There is sample:
+Case 1:
+Prefix="123", Suffix="ABC", FixedCandidate="User"
+LogInformation="There is no 123Replaced TextABC, And blahblah"
+It will search the "123" and "ABC" and replace the text between the prefix and suffix
+So new LogInformation will be:
+"There is no 123UserABC, And blahblah"

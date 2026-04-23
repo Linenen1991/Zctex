@@ -45,7 +45,8 @@ namespace WpfUsercontrol.Behaviors
             {
                 var run = new Run(segment.Text ?? string.Empty)
                 {
-                    Foreground = segment.Foreground
+                    Foreground = segment.Foreground,
+                    Background = segment.Background
                 };
                 textBlock.Inlines.Add(run);
             }

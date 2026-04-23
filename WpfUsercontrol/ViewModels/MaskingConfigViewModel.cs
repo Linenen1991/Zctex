@@ -137,7 +137,7 @@ namespace WpfUsercontrol.ViewModels
                         break;
                     }
 
-                    allMatches.Add(new TextMatch(found, spec.Pattern.Length, spec.Foreground, spec.Priority));
+                    allMatches.Add(new TextMatch(found, spec.Pattern.Length, spec.Background, spec.Priority));
                     index = found + 1;
                 }
             }
@@ -193,7 +193,7 @@ namespace WpfUsercontrol.ViewModels
                     boundedLength = text.Length - cursor;
                 }
 
-                segments.Add(new TextSegment(text.Substring(cursor, boundedLength), best.Foreground));
+                segments.Add(new TextSegment(text.Substring(cursor, boundedLength), Brushes.White, best.Background));
                 cursor += boundedLength;
                 matchIndex = scan;
             }
@@ -203,31 +203,31 @@ namespace WpfUsercontrol.ViewModels
 
         private readonly struct MatchSpec
         {
-            public MatchSpec(string pattern, Brush foreground, int priority)
+            public MatchSpec(string pattern, Brush background, int priority)
             {
                 Pattern = pattern;
-                Foreground = foreground;
+                Background = background;
                 Priority = priority;
             }
 
             public string Pattern { get; }
-            public Brush Foreground { get; }
+            public Brush Background { get; }
             public int Priority { get; }
         }
 
         private readonly struct TextMatch
         {
-            public TextMatch(int start, int length, Brush foreground, int priority)
+            public TextMatch(int start, int length, Brush background, int priority)
             {
                 Start = start;
                 Length = length;
-                Foreground = foreground;
+                Background = background;
                 Priority = priority;
             }
 
             public int Start { get; }
             public int Length { get; }
-            public Brush Foreground { get; }
+            public Brush Background { get; }
             public int Priority { get; }
         }
 
