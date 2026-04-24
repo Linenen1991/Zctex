@@ -23,23 +23,45 @@
                   AutoGenerateColumns="False"
                   CanUserAddRows="True"
                   CanUserDeleteRows="True"
+                  RowEditEnding="SearchRuleTable_RowEditEnding"
                   HeadersVisibility="Column"
                   Margin="0,0,0,10">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="searchPatternToRed"
-                                    Binding="{Binding SearchPatternToRed, UpdateSourceTrigger=PropertyChanged}"
+                <DataGridTemplateColumn Header="" Width="70" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Content="Remove"
+                                    Padding="8,2"
+                                    Command="{Binding DataContext.RemoveRuleCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                    CommandParameter="{Binding}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="ServiceName"
+                                    Binding="{Binding ServiceName, UpdateSourceTrigger=PropertyChanged}"
                                     Width="2*" />
-                <DataGridTextColumn Header="searchPatternToDarkRed"
-                                    Binding="{Binding SearchPatternToDarkRed, UpdateSourceTrigger=PropertyChanged}"
+                <DataGridTextColumn Header="ClassName"
+                                    Binding="{Binding ClassName, UpdateSourceTrigger=PropertyChanged}"
+                                    Width="2*" />
+                <DataGridTextColumn Header="MethodName"
+                                    Binding="{Binding MethodName, UpdateSourceTrigger=PropertyChanged}"
                                     Width="2*" />
                 <DataGridTemplateColumn Header="Prefix + [FixedString] + Suffix" Width="4*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
+                            <TextBlock VerticalAlignment="Center"
+                                       Text="{Binding CombinedPattern}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate>
                             <DockPanel LastChildFill="False">
                                 <TextBox Width="160"
+                                         Margin="0,0,8,0"
                                          VerticalContentAlignment="Center"
                                          Text="{Binding Prefix, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock VerticalAlignment="Center"
+                                <TextBlock Margin="0,0,8,0"
+                                           VerticalAlignment="Center"
                                            FontWeight="SemiBold"
                                            Text="{Binding FixedCandidate}" />
                                 <TextBox Width="160"
@@ -47,16 +69,22 @@
                                          Text="{Binding Suffix, UpdateSourceTrigger=PropertyChanged}" />
                             </DockPanel>
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Header="FixedString" Width="140">
                     <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock VerticalAlignment="Center"
+                                       Text="{Binding FixedCandidate}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
                         <DataTemplate>
                             <ComboBox ItemsSource="{Binding DataContext.FixedCandidates, RelativeSource={RelativeSource AncestorType=Window}}"
                                       SelectedItem="{Binding FixedCandidate, UpdateSourceTrigger=PropertyChanged}"
                                       VerticalContentAlignment="Center" />
                         </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
@@ -82,12 +110,22 @@
                   ItemsSource="{Binding DataFromServerView}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="UserComment" Width="220" DisplayMemberBinding="{Binding UserComment}" />
-                    <GridViewColumn Header="Message" Width="820">
+                    <GridViewColumn Header="ServiceName" Width="220" DisplayMemberBinding="{Binding ServiceName}" />
+                    <GridViewColumn Header="ClassName" Width="220" DisplayMemberBinding="{Binding ClassName}" />
+                    <GridViewColumn Header="MethodName" Width="220" DisplayMemberBinding="{Binding MethodName}" />
+                    <GridViewColumn Header="Message" Width="420">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock TextWrapping="Wrap"
                                            behaviors:TextBlockInlinesBehavior.Segments="{Binding MessageSegments}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="LogInformation" Width="420">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock TextWrapping="Wrap"
+                                           behaviors:TextBlockInlinesBehavior.Segments="{Binding LogInformationSegments}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

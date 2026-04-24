@@ -6,6 +6,12 @@ namespace WpfUsercontrol.ViewModels
     {
         private string _searchPatternToRed;
         private string _searchPatternToDarkRed;
+
+        private string _serviceName;
+        private string _className;
+        private string _methodName;
+
+
         private string _prefix;
         private string _suffix;
         private string _fixedCandidate;
@@ -13,8 +19,6 @@ namespace WpfUsercontrol.ViewModels
         public SearchRuleViewModel()
         {
             _fixedCandidate = "User";
-            _prefix = string.Empty;
-            _suffix = string.Empty;
         }
 
         public string SearchPatternToRed
@@ -29,6 +33,24 @@ namespace WpfUsercontrol.ViewModels
             set => SetProperty(ref _searchPatternToDarkRed, value);
         }
 
+        public string ServiceName
+        {
+            get => _serviceName;
+            set => SetProperty(ref _serviceName, value);
+        }
+
+        public string ClassName
+        {
+            get => _className;
+            set => SetProperty(ref _className, value);
+        }
+
+        public string MethodName
+        {
+            get => _methodName;
+            set => SetProperty(ref _methodName, value);
+        }
+
         public string Prefix
         {
             get => _prefix;
@@ -36,6 +58,7 @@ namespace WpfUsercontrol.ViewModels
             {
                 if (!string.IsNullOrEmpty(value) && value.EndsWith("*", StringComparison.Ordinal))
                 {
+                    OnPropertyChanged(nameof(Prefix));
                     return;
                 }
 
@@ -51,6 +74,12 @@ namespace WpfUsercontrol.ViewModels
             get => _suffix;
             set
             {
+                if (!string.IsNullOrEmpty(value) && value.StartsWith("*", StringComparison.Ordinal))
+                {
+                    OnPropertyChanged(nameof(Suffix));
+                    return;
+                }
+
                 if (SetProperty(ref _suffix, value))
                 {
                     OnPropertyChanged(nameof(CombinedPattern));
@@ -71,5 +100,11 @@ namespace WpfUsercontrol.ViewModels
         }
 
         public string CombinedPattern => $"{Prefix}[{FixedCandidate}]{Suffix}";
+
+        public bool IsEmpty =>
+            string.IsNullOrWhiteSpace(SearchPatternToRed) &&
+            string.IsNullOrWhiteSpace(SearchPatternToDarkRed) &&
+            string.IsNullOrWhiteSpace(Prefix) &&
+            string.IsNullOrWhiteSpace(Suffix);
     }
 }

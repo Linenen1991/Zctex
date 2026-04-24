@@ -1,0 +1,41 @@
+2026-04-24 - LogInformation Summary
+==================================
+
+MaskingConfig UI
+----------------
+- `LogListView` adds a `LogInformation` column rendered via inlines (`LogInformationSegments`).
+- `SearchRuleTable`:
+  - Col3 shows `CombinedPattern` when not editing; edits via `CellEditingTemplate` (Prefix/Suffix TextBoxes).
+  - Col4 edits via `ComboBox` (`FixedCandidate`), and displays as text when not editing.
+  - Adds a per-row `Remove` button.
+
+Data / ViewModels
+-----------------
+- `ServerLogEntryViewModel` adds:
+  - `LogInformation` (current output)
+  - `OriginalLogInformation` (baseline input for every Start Match run)
+  - `LogInformationSegments` (for rendering)
+- `TextSegment` supports both `Foreground` and `Background`.
+- `TextBlockInlinesBehavior` applies both colors to each `Run`.
+
+Start Match (LogInformation transform)
+--------------------------------------
+- Always processes from `OriginalLogInformation` (does not re-run on already transformed text).
+- For each rule row (Prefix/Suffix/FixedCandidate):
+  - Finds `Prefix ... Suffix` (Prefix/Suffix must be non-empty).
+  - Keeps the middle text and inserts `FixedCandidate` immediately before `Suffix`.
+  - Overlaps: earlier rows win; later overlapping insert/highlight is skipped.
+- Coloring:
+  - Middle text (between Prefix/Suffix): DarkRed background + White foreground.
+  - Inserted `FixedCandidate`: LightGreen background + Black foreground.
+  - Other text: Black foreground, no background.
+
+SearchRuleTable UX / Bug Fixes
+------------------------------
+- `*` input guard:
+  - Prefix cannot end with `*` (invalid input ignored/reverted).
+  - Suffix cannot start with `*` (invalid input ignored/reverted).
+- Empty-row creation fix:
+  - If the user commits the new-item row without entering any rule data, the empty row is removed on `RowEditEnding`.
+- Row remove:
+  - `Remove` button removes the clicked rule from `SearchRules`.

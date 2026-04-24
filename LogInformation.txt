@@ -1,0 +1,77 @@
+MaskingConfig – LogInformation Design / Code Changes
+===================================================
+
+Date: 2026-04-24
+
+UI (MaskingConfig.xaml)
+----------------------
+- Added `LogInformation` column to `LogListView`.
+  - Rendered as a `TextBlock` using `TextBlockInlinesBehavior.Segments` bound to `LogInformationSegments`.
+- `Message` column remains (still uses `MessageSegments`).
+
+ViewModel / Model Changes
+-------------------------
+- `ServerLogEntryViewModel`
+  - Added:
+    - `LogInformation` (string): the current transformed output string.
+    - `OriginalLogInformation` (string): immutable baseline string used for every Start Match run.
+    - `LogInformationSegments` (ObservableCollection<TextSegment>): inline segments for background/foreground rendering.
+- `TextSegment`
+  - Added `Background` (Brush) so a `Run` can be rendered with background color.
+- `TextBlockInlinesBehavior`
+  - Applies both `Foreground` and `Background` to each `Run`.
+
+Start Match (MaskingConfigViewModel)
+-----------------------------------
+Goal:
+- Use SearchRuleTable rules (Prefix/Suffix/FixedCandidate) to transform and highlight `LogInformation`.
+
+Rule application source:
+- Always compute from `OriginalLogInformation` (never from the already-transformed output).
+- If `OriginalLogInformation` is empty on first run, it is initialized from:
+  1) `LogInformation`, else
+  2) `Message`, else empty string.
+
+Transformation behavior (per rule):
+- For each rule row, find all occurrences of:
+  Prefix + [middle text] + Suffix   (both Prefix and Suffix must be non-empty)
+- Output keeps all original text but inserts `FixedCandidate` immediately before `Suffix`:
+  Prefix + [middle text] + FixedCandidate + Suffix
+
+Overlap handling:
+- Earlier-row wins.
+- A later rule is ignored if it would:
+  - insert at a suffix position already used by an earlier rule, OR
+  - highlight a middle-text range that overlaps a previously accepted middle-text range.
+
+Coloring (background-based)
+---------------------------
+- Middle text between Prefix and Suffix:
+  - Background: DarkRed
+  - Foreground: White
+- Inserted FixedCandidate:
+  - Background: LightGreen
+  - Foreground: Black
+- All other text:
+  - No background
+  - Foreground: Black
+
+SearchRuleTable Input Guard (“*”)
+---------------------------------
+- Prefix: if user types a value ending with `*`, ignore that input (revert to previous value).
+- Suffix: if user types a value starting with `*`, ignore that input (revert to previous value).
+
+SearchRuleTable Row Creation (Empty Row Bugfix)
+----------------------------------------------
+Symptom:
+- Clicking into the new-item row could commit an empty SearchRule row (no user input) and leave an unwanted blank row.
+
+Fix:
+- `SearchRuleViewModel` keeps default `FixedCandidate="User"` for UX, but `IsEmpty` ignores `FixedCandidate` (so an untouched new row is still treated as empty).
+- `MaskingConfig` handles `SearchRuleTable.RowEditEnding`:
+  - If the row being committed is a newly-added row and `SearchRuleViewModel.IsEmpty` is true, the row is removed.
+
+SearchRuleTable Remove Button
+-----------------------------
+- Added a `Remove` button column on each SearchRule row.
+- Clicking `Remove` calls `RemoveRuleCommand` and removes that row from `SearchRules`.
