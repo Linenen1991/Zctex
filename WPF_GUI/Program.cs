@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace MySampleProject
+namespace WPF_GUI
 {
     internal class Program
     {
