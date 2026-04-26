@@ -16,14 +16,14 @@ namespace WpfUsercontrol.ViewModels
 
         public MaskingConfigViewModel()
         {
-            FixedCandidates = new ReadOnlyCollection<string>(new[] { "Recipe_A", "RecipeID_A" });
+            FixedCandidates = new ReadOnlyCollection<string>(new[] { "DummayRecipe", "DummayID" });
 
             SearchRules = new ObservableCollection<SearchRuleViewModel>
             {
                 new SearchRuleViewModel
                 {
                     Prefix = "123",
-                    FixedCandidate = "Recipe_A",
+                    FixedCandidate = "DummayRecipe",
                     Suffix = "133"
                 }
             };
@@ -33,14 +33,12 @@ namespace WpfUsercontrol.ViewModels
                 new ServerLogEntryViewModel
                 {
                     Message = "RecipePath is D:\\OTEL\\My.xml, And Id=10, ",
-                    OriginalLogInformation = "RecipePath is D:\\OTEL\\My.xml, And Id=10, ",
-                    LogInformation = "RecipePath is D:\\OTEL\\My.xml, And Id=10, "
+                    OriginalMessage = "RecipePath is D:\\OTEL\\My.xml, And Id=10, "
                 },
                 new ServerLogEntryViewModel
                 {
                     Message = "User=alice; Password=secret; ABC123",
-                    OriginalLogInformation = "User=alice; Password=secret; ABC123",
-                    LogInformation = "User=alice; Password=secret; ABC123"
+                    OriginalMessage = "User=alice; Password=secret; ABC123"
                 }
             };
 
@@ -107,28 +105,20 @@ namespace WpfUsercontrol.ViewModels
             var rulesSnapshot = SearchRules.ToList();
             foreach (var entry in DataFromServer)
             {
-                //entry.MessageSegments = new ObservableCollection<TextSegment>(
-                //    BuildSegments(entry.Message ?? string.Empty, rulesSnapshot));
-
-                var originalLog = entry.OriginalLogInformation;
-                if (string.IsNullOrEmpty(originalLog))
+                var originalMessage = entry.OriginalMessage;
+                if (string.IsNullOrEmpty(originalMessage))
                 {
-                    originalLog = entry.LogInformation;
-                    if (string.IsNullOrEmpty(originalLog))
-                    {
-                        originalLog = entry.Message ?? string.Empty;
-                    }
-
-                    entry.OriginalLogInformation = originalLog;
+                    originalMessage = entry.Message ?? string.Empty;
+                    entry.OriginalMessage = originalMessage;
                 }
 
-                var logResult = TransformLogInformation(originalLog, rulesSnapshot);
-                entry.LogInformation = logResult.Text;
-                entry.LogInformationSegments = new ObservableCollection<TextSegment>(logResult.Segments);
+                var result = TransformMessage(originalMessage, rulesSnapshot);
+                entry.Message = result.Text;
+                entry.MessageSegments = new ObservableCollection<TextSegment>(result.Segments);
             }
         }
 
-        private static TransformResult TransformLogInformation(string originalText, IReadOnlyList<SearchRuleViewModel> rules)
+        private static TransformResult TransformMessage(string originalText, IReadOnlyList<SearchRuleViewModel> rules)
         {
             if (string.IsNullOrEmpty(originalText))
             {
@@ -355,160 +345,6 @@ namespace WpfUsercontrol.ViewModels
             public static int ByStartAscending(ColoredSpan x, ColoredSpan y)
             {
                 return x.Start.CompareTo(y.Start);
-            }
-        }
-
-        private static IReadOnlyList<TextSegment> BuildSegments(string text, IReadOnlyList<SearchRuleViewModel> rules)
-        {
-            if (string.IsNullOrEmpty(text))
-            {
-                return new[] { new TextSegment(string.Empty, Brushes.Black) };
-            }
-
-            var matchSpecs = new List<MatchSpec>();
-            foreach (var rule in rules)
-            {
-                if (!string.IsNullOrEmpty(rule?.SearchPatternToRed))
-                {
-                    matchSpecs.Add(new MatchSpec(rule.SearchPatternToRed, Brushes.Red, priority: 2));
-                }
-
-                if (!string.IsNullOrEmpty(rule?.SearchPatternToDarkRed))
-                {
-                    matchSpecs.Add(new MatchSpec(rule.SearchPatternToDarkRed, Brushes.DarkRed, priority: 1));
-                }
-            }
-
-            if (matchSpecs.Count == 0)
-            {
-                return new[] { new TextSegment(text, Brushes.Black) };
-            }
-
-            var allMatches = new List<TextMatch>();
-            foreach (var spec in matchSpecs)
-            {
-                var index = 0;
-                while (index < text.Length)
-                {
-                    var found = text.IndexOf(spec.Pattern, index, StringComparison.Ordinal);
-                    if (found < 0)
-                    {
-                        break;
-                    }
-
-                    allMatches.Add(new TextMatch(found, spec.Pattern.Length, spec.Background, spec.Priority));
-                    index = found + 1;
-                }
-            }
-
-            if (allMatches.Count == 0)
-            {
-                return new[] { new TextSegment(text, Brushes.Black) };
-            }
-
-            allMatches.Sort(TextMatchComparer.Instance);
-
-            var segments = new List<TextSegment>();
-            var cursor = 0;
-            var matchIndex = 0;
-
-            while (cursor < text.Length)
-            {
-                while (matchIndex < allMatches.Count && allMatches[matchIndex].Start < cursor)
-                {
-                    matchIndex++;
-                }
-
-                if (matchIndex >= allMatches.Count)
-                {
-                    segments.Add(new TextSegment(text.Substring(cursor), Brushes.Black));
-                    break;
-                }
-
-                var nextStart = allMatches[matchIndex].Start;
-                if (nextStart > cursor)
-                {
-                    segments.Add(new TextSegment(text.Substring(cursor, nextStart - cursor), Brushes.Black));
-                    cursor = nextStart;
-                    continue;
-                }
-
-                var best = allMatches[matchIndex];
-                var scan = matchIndex + 1;
-                while (scan < allMatches.Count && allMatches[scan].Start == cursor)
-                {
-                    var candidate = allMatches[scan];
-                    if (candidate.Priority > best.Priority ||
-                        (candidate.Priority == best.Priority && candidate.Length > best.Length))
-                    {
-                        best = candidate;
-                    }
-                    scan++;
-                }
-
-                var boundedLength = best.Length;
-                if (cursor + boundedLength > text.Length)
-                {
-                    boundedLength = text.Length - cursor;
-                }
-
-                segments.Add(new TextSegment(text.Substring(cursor, boundedLength), Brushes.White, best.Background));
-                cursor += boundedLength;
-                matchIndex = scan;
-            }
-
-            return segments;
-        }
-
-        private readonly struct MatchSpec
-        {
-            public MatchSpec(string pattern, Brush background, int priority)
-            {
-                Pattern = pattern;
-                Background = background;
-                Priority = priority;
-            }
-
-            public string Pattern { get; }
-            public Brush Background { get; }
-            public int Priority { get; }
-        }
-
-        private readonly struct TextMatch
-        {
-            public TextMatch(int start, int length, Brush background, int priority)
-            {
-                Start = start;
-                Length = length;
-                Background = background;
-                Priority = priority;
-            }
-
-            public int Start { get; }
-            public int Length { get; }
-            public Brush Background { get; }
-            public int Priority { get; }
-        }
-
-        private sealed class TextMatchComparer : IComparer<TextMatch>
-        {
-            public static TextMatchComparer Instance { get; } = new TextMatchComparer();
-
-            public int Compare(TextMatch x, TextMatch y)
-            {
-                var byStart = x.Start.CompareTo(y.Start);
-                if (byStart != 0)
-                {
-                    return byStart;
-                }
-
-                var byPriority = y.Priority.CompareTo(x.Priority);
-                if (byPriority != 0)
-                {
-                    return byPriority;
-                }
-
-                return y.Length.CompareTo(x.Length);
             }
         }
     }

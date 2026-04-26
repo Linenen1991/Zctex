@@ -9,18 +9,12 @@ namespace WpfUsercontrol.ViewModels
         private string _serviceName;
         private string _className;
         private string _methodName;
-        private string _logInformation;
-        private string _originalLogInformation;
         private ObservableCollection<TextSegment> _messageSegments;
-        private ObservableCollection<TextSegment> _logInformationSegments;
+        private string _originalMessage;
 
         public ServerLogEntryViewModel()
         {
             _messageSegments = new ObservableCollection<TextSegment>
-            {
-                new TextSegment(string.Empty, Brushes.Black)
-            };
-            _logInformationSegments = new ObservableCollection<TextSegment>
             {
                 new TextSegment(string.Empty, Brushes.Black)
             };
@@ -48,40 +42,19 @@ namespace WpfUsercontrol.ViewModels
         public string Message
         {
             get => _message;
-            set
-            {
-                if (SetProperty(ref _message, value))
-                {
-                    MessageSegments = new ObservableCollection<TextSegment>
-                    {
-                        new TextSegment(_message ?? string.Empty, Brushes.Black)
-                    };
-                }
-            }
+            set => SetProperty(ref _message, value);
         }
 
-        public string LogInformation
+        public string OriginalMessage
         {
-            get => _logInformation;
-            set => SetProperty(ref _logInformation, value);
-        }
-
-        public string OriginalLogInformation
-        {
-            get => _originalLogInformation;
-            set => SetProperty(ref _originalLogInformation, value);
+            get => _originalMessage;
+            set => SetProperty(ref _originalMessage, value);
         }
 
         public ObservableCollection<TextSegment> MessageSegments
         {
             get => _messageSegments;
             set => SetProperty(ref _messageSegments, value);
-        }
-
-        public ObservableCollection<TextSegment> LogInformationSegments
-        {
-            get => _logInformationSegments;
-            set => SetProperty(ref _logInformationSegments, value);
         }
     }
 }

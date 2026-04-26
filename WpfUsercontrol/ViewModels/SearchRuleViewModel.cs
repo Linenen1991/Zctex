@@ -18,7 +18,7 @@ namespace WpfUsercontrol.ViewModels
 
         public SearchRuleViewModel()
         {
-            _fixedCandidate = "User";
+            _fixedCandidate = "DummayRecipe";
         }
 
         public string SearchPatternToRed

@@ -39,3 +39,22 @@ SearchRuleTable UX / Bug Fixes
   - If the user commits the new-item row without entering any rule data, the empty row is removed on `RowEditEnding`.
 - Row remove:
   - `Remove` button removes the clicked rule from `SearchRules`.
+
+Commit Review (4164dea "User Edit")
+----------------------------------
+Repo state:
+- Latest commit: `4164dea3f34b838a7b9c123b9c310f36dd548574` (Fri Apr 24 13:56:18 2026 +0800).
+- Files touched: adds docs (`2026_04_24_LogInformation.txt`, `LogInformation.txt`, `Design2.txt`) and updates MaskingConfig UI + ViewModels.
+
+What looks good:
+- `SearchRuleTable` template-column editing is implemented via `CellEditingTemplate`, so typing Prefix/Suffix properly creates the new-item row (matches the behavior of `DataGridTextColumn`).
+- `RowEditEnding` cleanup prevents leaving an empty new row when the user commits without entering data.
+- `LogInformation` transformation is based on `OriginalLogInformation`, preventing repeated Start Match clicks from re-processing already transformed output.
+- Highlighting uses background colors (DarkRed/LightGreen) with appropriate text colors (White/Black) via `TextSegment.Background`.
+
+Potential issues / follow-ups:
+- `SearchRuleViewModel.IsEmpty` does not consider `ServiceName`, `ClassName`, or `MethodName`. If the user fills only these fields on the new-item row (and leaves Prefix/Suffix empty), the row can still be treated as empty and removed on commit.
+- `ServiceName` / `ClassName` / `MethodName` are currently not used by the `LogInformation` transform logic (Prefix/Suffix/FixedCandidate only). If they are intended to scope rules, the transform should filter applicable rules per log entry.
+
+Local working tree note:
+- There is an uncommitted change in `WpfUsercontrol/ViewModels/MaskingConfigViewModel.cs` that only adjusts the demo `FixedCandidates` strings (no behavior change).

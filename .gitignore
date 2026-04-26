@@ -3,7 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 ## and https://github.com/github/gitignore/blob/master/Global/VisualStudioCode.gitignore
-
+coding_script.txt
 # User-specific files
 *.rsuser
 *.suo
