@@ -1,30 +1,28 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace WPF_GUI
 {
-    /// <summary>
-    /// MainWindow.xaml 的互動邏輯
-    /// </summary>
     public partial class MainWindow : Window
     {
-        List<LogsData> _allData;
+        private readonly List<LogsData> _allData;
+        private readonly ObservableCollection<EventData> _events;
+
         public MainWindow()
         {
-            _allData = new List<LogsData>();
             InitializeComponent();
+
+            _allData = new List<LogsData>();
+
+            _events = new ObservableCollection<EventData>
+            {
+                new EventData { eventdata = "EVT-001", detailmessage = "First detail message." },
+                new EventData { eventdata = "EVT-002", detailmessage = "Longer detail message to test horizontal scrolling. 0123456789 0123456789 0123456789 0123456789" },
+                new EventData { eventdata = "EVT-003", detailmessage = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." },
+            };
+
+            EventsPair.ItemsSource = _events;
         }
     }
 }
