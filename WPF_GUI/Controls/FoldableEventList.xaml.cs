@@ -25,7 +25,7 @@ namespace WPF_GUI.Controls
                 nameof(CollapsedListWidth),
                 typeof(double),
                 typeof(FoldableEventList),
-                new PropertyMetadata(200d, OnLayoutPropertyChanged));
+                new PropertyMetadata(100d, OnLayoutPropertyChanged));
 
         public static readonly DependencyProperty ExpandedListWidthProperty =
             DependencyProperty.Register(

@@ -9,7 +9,7 @@
              d:DesignWidth="420">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="ListAreaColumn" Width="200" />
+            <ColumnDefinition x:Name="ListAreaColumn" Width="100" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
@@ -22,7 +22,7 @@
                 <GridView>
                     <GridViewColumn x:Name="EventColumn"
                                     Header="Event"
-                                    Width="200"
+                                    Width="100"
                                     DisplayMemberBinding="{Binding eventdata}" />
                     <GridViewColumn x:Name="DetailColumn"
                                     Header="Detail"
