@@ -79,12 +79,12 @@ namespace WPF_GUI.Controls
 
         private void ApplyExpandedState()
         {
-            if (ListAreaColumn == null || DetailColumn == null)
+            if (EventsView == null || DetailColumn == null)
             {
                 return;
             }
 
-            ListAreaColumn.Width = new GridLength(IsExpanded ? ExpandedListWidth : CollapsedListWidth);
+            EventsView.Width = IsExpanded ? ExpandedListWidth : CollapsedListWidth;
             DetailColumn.Width = IsExpanded ? double.NaN : 0d;
         }
     }

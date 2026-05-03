@@ -7,57 +7,57 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="420">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition x:Name="ListAreaColumn" Width="100" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
+    <ListView x:Name="EventsView"
+              ScrollViewer.HorizontalScrollBarVisibility="Auto"
+              ScrollViewer.VerticalScrollBarVisibility="Auto"
+              ItemsSource="{Binding ItemsSource, ElementName=root}">
+        <ListView.View>
+            <GridView>
+                <GridViewColumn x:Name="EventColumn"
+                                Width="100"
+                                DisplayMemberBinding="{Binding eventdata}">
+                    <GridViewColumn.HeaderContainerStyle>
+                        <Style TargetType="{x:Type GridViewColumnHeader}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="4,0" />
+                        </Style>
+                    </GridViewColumn.HeaderContainerStyle>
+                    <GridViewColumn.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-        <ListView Grid.Column="0"
-                  x:Name="EventsView"
-                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  ItemsSource="{Binding ItemsSource, ElementName=root}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn x:Name="EventColumn"
-                                    Header="Event"
-                                    Width="100"
-                                    DisplayMemberBinding="{Binding eventdata}" />
-                    <GridViewColumn x:Name="DetailColumn"
-                                    Header="Detail"
-                                    Width="0">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding detailmessage}"
-                                           TextWrapping="NoWrap"
-                                           TextTrimming="None" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-
-        <ToggleButton Grid.Column="1"
-                      x:Name="ToggleExpandedButton"
-                      Margin="8,0"
-                      Padding="10,6"
-                      MinWidth="90"
-                      HorizontalAlignment="Stretch"
-                      VerticalAlignment="Stretch"
-                      VerticalContentAlignment="Center"
-                      IsChecked="{Binding IsExpanded, ElementName=root, Mode=TwoWay}">
-            <ToggleButton.Style>
-                <Style TargetType="{x:Type ToggleButton}">
-                    <Setter Property="Content" Value="Expand" />
-                    <Style.Triggers>
-                        <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="Content" Value="Collapse" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </ToggleButton.Style>
-        </ToggleButton>
-    </Grid>
+                            <TextBlock Grid.Column="0"
+                                       Text="Event"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                            <CheckBox Grid.Column="1"
+                                      x:Name="ShowDetailsCheckBox"
+                                      Width="16"
+                                      Height="16"
+                                      Margin="4,0,0,0"
+                                      HorizontalAlignment="Right"
+                                      VerticalAlignment="Center"
+                                      ToolTip="Show details"
+                                      AutomationProperties.Name="Show details"
+                                      IsChecked="{Binding IsExpanded, ElementName=root, Mode=TwoWay}" />
+                        </Grid>
+                    </GridViewColumn.Header>
+                </GridViewColumn>
+                <GridViewColumn x:Name="DetailColumn"
+                                Header="Detail"
+                                Width="0">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding detailmessage}"
+                                       TextWrapping="NoWrap"
+                                       TextTrimming="None" />
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                </GridViewColumn>
+            </GridView>
+        </ListView.View>
+    </ListView>
 </UserControl>

@@ -5,6 +5,7 @@
 ## and https://github.com/github/gitignore/blob/master/Global/VisualStudioCode.gitignore
 
 _[Bb]uilt/
+.comtypes_cache/
 
 # User-specific files
 *.rsuser
