@@ -76,6 +76,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DummyMasker.cs" />
     <Compile Include="ViewModels\MaskingConfigViewModel.cs" />
     <Compile Include="ViewModels\RelayCommand.cs" />
     <Compile Include="ViewModels\SearchRuleViewModel.cs" />

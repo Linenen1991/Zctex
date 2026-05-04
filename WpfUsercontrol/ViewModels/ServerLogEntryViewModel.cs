@@ -51,6 +51,12 @@ namespace WpfUsercontrol.ViewModels
             set => SetProperty(ref _originalMessage, value);
         }
 
+        public string MaskedMessage
+        {
+            get => _originalMessage;
+            set => SetProperty(ref _originalMessage, value);
+        }
+
         public ObservableCollection<TextSegment> MessageSegments
         {
             get => _messageSegments;

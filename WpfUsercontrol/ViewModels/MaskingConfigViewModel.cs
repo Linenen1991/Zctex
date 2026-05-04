@@ -22,10 +22,16 @@ namespace WpfUsercontrol.ViewModels
             {
                 new SearchRuleViewModel
                 {
-                    Prefix = "123",
+                    Prefix = "OTEL\\",
                     FixedCandidate = "DummayRecipe",
-                    Suffix = "133"
-                }
+                    Suffix = ".xml"
+                },
+                new SearchRuleViewModel
+                {
+                    Prefix = "Id=",
+                    FixedCandidate = "DummayID",
+                    Suffix = ","
+                },
             };
 
             DataFromServer = new ObservableCollection<ServerLogEntryViewModel>
@@ -34,6 +40,16 @@ namespace WpfUsercontrol.ViewModels
                 {
                     Message = "RecipePath is D:\\OTEL\\My.xml, And Id=10, ",
                     OriginalMessage = "RecipePath is D:\\OTEL\\My.xml, And Id=10, "
+                },
+                new ServerLogEntryViewModel
+                {
+                    Message = "RecipePath is D:\\OTEL\\My.xml, And Id=10, ",
+                    OriginalMessage = "RecipePath is D:\\OTEL\\My.xml, And Id=10, "
+                },
+                new ServerLogEntryViewModel
+                {
+                    Message = "RecipePath is D:\\OTEL\\Your.xml, And Id=30, ",
+                    OriginalMessage = "RecipePath is D:\\OTEL\\Your.xml, And Id=30, "
                 },
                 new ServerLogEntryViewModel
                 {
@@ -159,7 +175,9 @@ namespace WpfUsercontrol.ViewModels
 
                     if (!usedInsertPositions.Contains(suffixPos) && !Overlaps(middleStart, suffixPos, occupiedMiddleRanges))
                     {
-                        operations.Add(new InsertOperation(prefixPos, middleStart, suffixPos, fixedCandidate));
+                        var replaceText = originalText.Substring(middleStart, suffixPos - middleStart);
+                        var maskedText = WpfUsercontrol.DummyMasker.GetMasking(fixedCandidate, replaceText);
+                        operations.Add(new InsertOperation(prefixPos, middleStart, suffixPos, maskedText));
                         usedInsertPositions.Add(suffixPos);
                         if (suffixPos > middleStart)
                         {

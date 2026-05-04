@@ -110,10 +110,10 @@
                   ItemsSource="{Binding DataFromServerView}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="ServiceName" Width="220" DisplayMemberBinding="{Binding ServiceName}" />
-                    <GridViewColumn Header="ClassName" Width="220" DisplayMemberBinding="{Binding ClassName}" />
-                    <GridViewColumn Header="MethodName" Width="220" DisplayMemberBinding="{Binding MethodName}" />
-                    <GridViewColumn Header="Message" Width="420">
+                    <GridViewColumn Header="ServiceName" Width="100" DisplayMemberBinding="{Binding ServiceName}" />
+                    <GridViewColumn Header="ClassName" Width="100" DisplayMemberBinding="{Binding ClassName}" />
+                    <GridViewColumn Header="MethodName" Width="100" DisplayMemberBinding="{Binding MethodName}" />
+                    <GridViewColumn Header="Message" Width="600">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock TextWrapping="Wrap"
