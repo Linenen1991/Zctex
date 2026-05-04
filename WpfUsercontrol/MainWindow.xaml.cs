@@ -24,5 +24,16 @@ namespace WpfUsercontrol
         {
             InitializeComponent();
         }
+
+        private void OpenMaskingConfig_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new MaskingConfig
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            dialog.ShowDialog();
+        }
     }
 }

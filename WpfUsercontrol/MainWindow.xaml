@@ -5,7 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfUsercontrol"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow"
+        Height="450"
+        Width="800">
+    <Grid Margin="16">
+        <Button Content="Open Masking Config"
+                Width="180"
+                Height="36"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Click="OpenMaskingConfig_Click" />
     </Grid>
 </Window>
