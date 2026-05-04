@@ -113,7 +113,7 @@
                     <GridViewColumn Header="ServiceName" Width="100" DisplayMemberBinding="{Binding ServiceName}" />
                     <GridViewColumn Header="ClassName" Width="100" DisplayMemberBinding="{Binding ClassName}" />
                     <GridViewColumn Header="MethodName" Width="100" DisplayMemberBinding="{Binding MethodName}" />
-                    <GridViewColumn Header="Message" Width="600">
+                    <GridViewColumn Header="Message" Width="460">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock TextWrapping="Wrap"
@@ -121,6 +121,7 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <GridViewColumn Header="MaskedMessage" Width="460" DisplayMemberBinding="{Binding MaskedMessage}" />
                 </GridView>
             </ListView.View>
         </ListView>

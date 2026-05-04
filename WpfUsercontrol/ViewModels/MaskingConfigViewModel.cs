@@ -130,15 +130,16 @@ namespace WpfUsercontrol.ViewModels
 
                 var result = TransformMessage(originalMessage, rulesSnapshot);
                 entry.Message = result.Text;
+                entry.MaskedMessage = result.MaskedText;
                 entry.MessageSegments = new ObservableCollection<TextSegment>(result.Segments);
             }
         }
 
-        private static TransformResult TransformMessage(string originalText, IReadOnlyList<SearchRuleViewModel> rules)
+        internal static TransformResult TransformMessage(string originalText, IReadOnlyList<SearchRuleViewModel> rules)
         {
             if (string.IsNullOrEmpty(originalText))
             {
-                return new TransformResult(string.Empty, new[] { new TextSegment(string.Empty, Brushes.Black) });
+                return new TransformResult(string.Empty, string.Empty, new[] { new TextSegment(string.Empty, Brushes.Black) });
             }
 
             var operations = new List<InsertOperation>();
@@ -191,17 +192,21 @@ namespace WpfUsercontrol.ViewModels
 
             if (operations.Count == 0)
             {
-                return new TransformResult(originalText, new[] { new TextSegment(originalText, Brushes.Black) });
+                return new TransformResult(originalText, originalText, new[] { new TextSegment(originalText, Brushes.Black) });
             }
 
             var textBuilder = new StringBuilder(originalText);
+            var maskedTextBuilder = new StringBuilder(originalText);
             operations.Sort(InsertOperation.InsertAtDescending);
             foreach (var operation in operations)
             {
                 textBuilder.Insert(operation.InsertAt, operation.InsertText);
+                maskedTextBuilder.Remove(operation.MiddleStart, operation.InsertAt - operation.MiddleStart);
+                maskedTextBuilder.Insert(operation.MiddleStart, operation.InsertText);
             }
 
             var finalText = textBuilder.ToString();
+            var maskedFinalText = maskedTextBuilder.ToString();
 
             operations.Sort(InsertOperation.InsertAtAscending);
             var insertPoints = new List<InsertPoint>(operations.Count);
@@ -251,7 +256,7 @@ namespace WpfUsercontrol.ViewModels
                 segments.Add(new TextSegment(finalText.Substring(cursor), Brushes.Black));
             }
 
-            return new TransformResult(finalText, segments);
+            return new TransformResult(finalText, maskedFinalText, segments);
         }
 
         private static bool Overlaps(int start, int end, List<TextRange> occupiedRanges)
@@ -283,15 +288,17 @@ namespace WpfUsercontrol.ViewModels
             return offset;
         }
 
-        private readonly struct TransformResult
+        internal readonly struct TransformResult
         {
-            public TransformResult(string text, IReadOnlyList<TextSegment> segments)
+            public TransformResult(string text, string maskedText, IReadOnlyList<TextSegment> segments)
             {
                 Text = text;
+                MaskedText = maskedText;
                 Segments = segments;
             }
 
             public string Text { get; }
+            public string MaskedText { get; }
             public IReadOnlyList<TextSegment> Segments { get; }
         }
 

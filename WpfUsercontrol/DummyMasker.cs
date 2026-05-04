@@ -36,5 +36,11 @@ namespace WpfUsercontrol
                 maskCollection[fixedCan].Add(name, GetNext(fixedCan));
             return maskCollection[fixedCan][name];
         }
+
+        internal static void Reset()
+        {
+            maskCollection.Clear();
+            maskCount.Clear();
+        }
     }
 }

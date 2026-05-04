@@ -11,6 +11,7 @@ namespace WpfUsercontrol.ViewModels
         private string _methodName;
         private ObservableCollection<TextSegment> _messageSegments;
         private string _originalMessage;
+        private string _maskedMessage;
 
         public ServerLogEntryViewModel()
         {
@@ -53,8 +54,8 @@ namespace WpfUsercontrol.ViewModels
 
         public string MaskedMessage
         {
-            get => _originalMessage;
-            set => SetProperty(ref _originalMessage, value);
+            get => _maskedMessage;
+            set => SetProperty(ref _maskedMessage, value);
         }
 
         public ObservableCollection<TextSegment> MessageSegments
