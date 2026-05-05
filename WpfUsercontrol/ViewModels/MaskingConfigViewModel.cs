@@ -113,7 +113,11 @@ namespace WpfUsercontrol.ViewModels
                 return true;
             }
 
-            return (entry.Message ?? string.Empty).IndexOf(FilterText, StringComparison.Ordinal) >= 0;
+            var sourceText = string.IsNullOrEmpty(entry.OriginalMessage)
+                ? entry.Message ?? string.Empty
+                : entry.OriginalMessage;
+
+            return sourceText.IndexOf(FilterText, StringComparison.Ordinal) >= 0;
         }
 
         private void ApplyMatch()

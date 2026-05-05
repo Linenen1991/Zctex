@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Reference Include="PresentationCore" />
+    <Reference Include="WindowsBase" />
     <ProjectReference Include="..\WpfUsercontrol\WpfUsercontrol.csproj" />
   </ItemGroup>
 

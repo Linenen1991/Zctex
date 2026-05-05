@@ -129,6 +129,22 @@ namespace WpfUsercontrol.Tests
             Assert.That(result.MaskedText, Is.EqualTo(originalText));
         }
 
+        [Test]
+        public void FilterCommand_SearchesOriginalMessage_NotPreviewMessage()
+        {
+            var viewModel = new MaskingConfigViewModel();
+
+            viewModel.FilterText = "DummayRecipe_1";
+            viewModel.FilterCommand.Execute(null);
+
+            Assert.That(viewModel.DataFromServerView.Cast<ServerLogEntryViewModel>().Count(), Is.EqualTo(0));
+
+            viewModel.FilterText = "Id=10";
+            viewModel.FilterCommand.Execute(null);
+
+            Assert.That(viewModel.DataFromServerView.Cast<ServerLogEntryViewModel>().Count(), Is.EqualTo(2));
+        }
+
         private static IReadOnlyList<SearchRuleViewModel> Rules(params SearchRuleViewModel[] rules)
         {
             return rules;
